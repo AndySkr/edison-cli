@@ -1,0 +1,3 @@
+/** @format */
+
+require("./command/index");
