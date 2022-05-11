@@ -4,22 +4,31 @@ const promptCreate = [
   {
     type: "input",
     name: "author",
-    message: "请输入项目创建人",
+    message: "请输入项目作者",
     default() {
       return "@edison";
     },
   },
   {
     type: "input",
-    name: "desc",
+    name: "description",
     message: "请输入项目描述",
     default() {
       return "a new project";
     },
   },
+
   {
-    when: (answers) => answers.features.includes("typescript"),
+    type: "confirm",
+    name: "private",
+    message: "项目是否为private？(y/N)",
+    default() {
+      return false;
+    },
   },
+  // {
+  //   when: (answers) => answers.features.includes("typescript"),
+  // },
 ];
 
 const projectList = {
@@ -29,10 +38,17 @@ const projectList = {
   pageSize: 20,
   choices: [],
 };
+const tagList = {
+  type: "list",
+  name: "tag",
+  message: "请选择项目tag",
+  choices: [],
+};
 let downloadDir =
   process.env[process.platform === "darwin" ? "HOME" : "USERPROFILE"];
 module.exports = {
   promptCreate,
   projectList,
   downloadDir,
+  tagList,
 };

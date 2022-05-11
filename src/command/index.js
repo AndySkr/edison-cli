@@ -16,7 +16,7 @@ program
   .addArgument("<projectName>")
   .description("create a new project")
   .action((projectName, destination) => {
-    create();
+    create(projectName);
   });
 
 program.parse();

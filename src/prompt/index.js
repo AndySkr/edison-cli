@@ -6,7 +6,6 @@ async function prompt(promptConfig) {
   let answers = null;
   try {
     answers = await inquirer.prompt(promptConfig);
-    // console.log(answers);
   } catch (error) {
     if (error.isTtyError) {
       console.log(chalk.red(error));

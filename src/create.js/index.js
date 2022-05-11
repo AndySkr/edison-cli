@@ -1,21 +1,19 @@
 /** @format */
 
-const { promptCreate, projectList, downloadDir } = require("../constant/index");
+const ejs = require("ejs");
+const fs = require("fs");
 const child_process = require("child_process");
 const { httpReq, downloadTemplate } = require("../util/http");
 const { spinnerWrap } = require("../util/spinnerWrap.js");
 const { prompt } = require("../prompt");
+const { promptCreate, projectList, tagList } = require("../constant/index");
+let projectPath = "";
 async function list() {
   prompt(await getProjectList());
 }
-async function create() {
-  const tagList = {
-    type: "list",
-    name: "tag",
-    message: "请选择项目tag",
-    choices: [],
-  };
-  const answers = await prompt(promptCreate);
+async function create(projectName) {
+  let answers = await prompt(promptCreate);
+  answers = { ...answers, projectName };
   const { repo } = await prompt(await getProjectList());
   const projectTagsList = await getTagsByProject(repo);
   // 如果项目存在tag时
@@ -23,16 +21,19 @@ async function create() {
     tagList.choices = projectTagsList;
     var { tag = "" } = await prompt(tagList);
   }
-  download(repo, tag);
+  await download(repo, tag, answers);
+  spinnerWrap(() => resolveTemplateConfig(answers), "wating...")();
 }
-async function download(repo, tag) {
+async function download(repo, tag, answers) {
+  const { projectName = repo } = answers;
+  projectPath = `${process.cwd()}/${projectName}`; // 更新下载的路径
   let downloadUrl = `AndySkr/${repo}`;
   if (tag) {
     downloadUrl = `AndySkr/${repo}#${tag}`;
   }
   try {
     await spinnerWrap(
-      () => downloadTemplate(downloadUrl, `${process.cwd()}/${repo}`),
+      () => downloadTemplate(downloadUrl, projectPath),
       "downloading..."
     )(); //path.resolve(__dirname, '..')
   } catch (error) {
@@ -54,5 +55,13 @@ async function getTagsByProject(projectName) {
   let res = (await spinnerWrap(httpReq, "loading...")(url)) || [];
   return res?.data?.map((item) => item.name);
 }
-
+function resolveTemplateConfig(config) {
+  const filepath = `${projectPath}/package.json`;
+  fs.readFile(filepath, (err, data) => {
+    if (err) throw err;
+    const pckfileStr = data.toString();
+    const res = ejs.render(pckfileStr, config);
+    fs.writeFileSync(filepath, res);
+  });
+}
 module.exports = { list, create };
