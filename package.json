@@ -5,10 +5,11 @@
   "main": "src/index.js",
   "exports": "./src/index.js",
   "bin": {
-    "edison-cli": "bin/www"
+    "suncandle": "bin/www"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node bin/www"
   },
   "repository": {
     "type": "git",
@@ -28,7 +29,6 @@
     "commander": "^8.2.0",
     "download-git-repo": "^3.0.2",
     "inquirer": "^8.2.0",
-    "ora": "^6.0.1",
-    "spinner": "^0.3.4"
+    "ora": "^5.2.0"
   }
 }

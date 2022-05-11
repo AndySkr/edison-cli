@@ -2,23 +2,22 @@
 
 const { program } = require("commander");
 const { prompt } = require("../prompt");
-const { spinnerWrap } = require("../util/index.js");
-const { promptCreate } = require("../constant/index");
+const { list, create } = require("../create.js");
 program
   .version(require("../../package.json").version, "-v, --version")
   .usage("<command> [options] 快速启动项目")
   .command("list")
   .description("search current project list")
   .action((source, destination) => {
-    console.log(source, "clone command called");
+    list();
   });
 program
-  .command("createApp")
+  .command("create <name>")
   .addArgument("<projectName>")
   .description("create a new project")
   .action((projectName, destination) => {
-    console.log(projectName);
-    prompt(promptCreate);
+    create();
   });
 
-program.parse(process.argv);
+program.parse();
+// process.argv

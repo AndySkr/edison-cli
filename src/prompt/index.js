@@ -2,20 +2,18 @@
 
 const inquirer = require("inquirer");
 const chalk = require("chalk");
-function prompt(promptConfig) {
-  inquirer
-    .prompt(promptConfig)
-    .then((answers) => {
-      console.log(answers);
-    })
-    .catch((error) => {
-      if (error.isTtyError) {
-        console.log(chalk.red(error));
-        // Prompt couldn't be rendered in the current environment
-      } else {
-        // Something else went wrong
-      }
-    });
+async function prompt(promptConfig) {
+  let answers = null;
+  try {
+    answers = await inquirer.prompt(promptConfig);
+    // console.log(answers);
+  } catch (error) {
+    if (error.isTtyError) {
+      console.log(chalk.red(error));
+      // Prompt couldn't be rendered in the current environment
+    }
+  }
+  return answers;
 }
 module.exports = {
   prompt,
